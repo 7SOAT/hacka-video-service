@@ -17,6 +17,7 @@ export class DynamoDBService {
         secretAccessKey: this.configService.get<string>(
           'AWS_SECRET_ACCESS_KEY',
         ),
+        sessionToken: this.configService.get<string>('AWS_SESSION_TOKEN'),
       },
     });
 

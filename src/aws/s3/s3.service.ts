@@ -23,6 +23,7 @@ export class S3Service {
         secretAccessKey: this.configService.get<string>(
           'AWS_SECRET_ACCESS_KEY',
         ),
+        sessionToken: this.configService.get<string>('AWS_SESSION_TOKEN'),
       },
       endpoint: this.configService.get<string>('AWS_ENDPOINT_URL'),
       forcePathStyle: true,
