@@ -14,8 +14,8 @@ spec:
       labels:
         app: hacka-video-service-app
     spec:
-      nodeSelector:
-        eks.nodegroup: apis-node-group
+      # nodeSelector:
+      #   eks.nodegroup: apis-node-group
       containers:
       - name: hacka-video-service-app
         image: luizpainodev/hacka-video-service:latest
