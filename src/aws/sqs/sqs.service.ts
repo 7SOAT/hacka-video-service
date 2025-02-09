@@ -1,5 +1,6 @@
 import { SendMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SqsService {
@@ -7,12 +8,14 @@ export class SqsService {
   private sqs: SQSClient;
   private readonly queueUrl = process.env.SQS_QUEUE_URL || '';
 
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     this.sqs = new SQSClient({
-      region: process.env.AWS_REGION || 'us-east-1',
+      region: this.configService.get<string>('AWS_REGION') || 'us-east-1',
       credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+        accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID') || '',
+        secretAccessKey:
+          this.configService.get<string>('AWS_SECRET_ACCESS_KEY') || '',
+        sessionToken: this.configService.get<string>('AWS_SESSION_TOKEN'),
       },
     });
   }
