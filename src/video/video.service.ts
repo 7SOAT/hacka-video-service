@@ -7,6 +7,7 @@ import { QueryCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { S3Service } from 'src/aws/s3/s3.service';
+import { SqsService } from 'src/aws/sqs/sqs.service';
 import { DynamoDBService } from 'src/database/dynamodb.service';
 import { CreateVideoDto } from 'src/dto/video/create-video.dto';
 import { FindVideoDto } from 'src/dto/video/find-video.dto';
@@ -21,6 +22,7 @@ export class VideoService {
     private readonly dynamoDBService: DynamoDBService,
     private readonly s3Service: S3Service,
     private readonly configService: ConfigService,
+    private readonly sqsService: SqsService,
   ) {
     this.tableName = this.configService.get<string>('DYNAMODB_TABLE');
   }
@@ -85,6 +87,12 @@ export class VideoService {
 
       await this.dynamoDBService.getClient().send(command);
       this.logger.log(`Created video with ID ${video.id}`);
+
+      await this.sqsService.sendMessage({
+        videoId: video.id,
+        userId: video.userId,
+        s3Key: video.s3Key,
+      });
 
       const videoResponse = await this.findById({
         id: video.id,
