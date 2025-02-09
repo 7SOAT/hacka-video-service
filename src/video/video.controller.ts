@@ -31,7 +31,7 @@ export class VideoController {
     return await this.videoService.create(video);
   }
 
-  @Get(':id/:userId')
+  @Get(':id/user/:userId')
   @ApiResponse({
     status: 200,
     description: 'Get a video by ID',
@@ -51,7 +51,7 @@ export class VideoController {
     return await this.videoService.download({ id, userId: userID });
   }
 
-  @Put(':id/:userId')
+  @Put(':id/user/:userId')
   @ApiResponse({
     status: 200,
     description: 'Update a video by ID',
@@ -65,5 +65,15 @@ export class VideoController {
     @Body() video: UpdateVideosDto,
   ) {
     return await this.videoService.update(id, userId, video);
+  }
+
+  @Get('user/:userId')
+  @ApiResponse({
+    status: 200,
+    description: 'List of videos',
+  })
+  @ApiResponse({ status: 404, description: 'Not found.' })
+  async findByUserId(@Param('userId') userId: string) {
+    return await this.videoService.findByUserId(userId);
   }
 }

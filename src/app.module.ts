@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { DynamoDBModule } from './database/dynamodb.module';
 import { VideoModule } from './video/video.module';
 import { ConfigModule } from '@nestjs/config';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     DynamoDBModule,
     VideoModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [],

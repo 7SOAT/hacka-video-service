@@ -4,13 +4,18 @@ import {
   CreateTableCommand,
   ScalarAttributeType,
   KeyType,
+  GlobalSecondaryIndex,
 } from '@aws-sdk/client-dynamodb';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class DynamoDBInitService implements OnModuleInit {
   private readonly logger = new Logger(DynamoDBInitService.name);
 
-  constructor(private readonly dynamoDBService: DynamoDBService) {}
+  constructor(
+    private readonly dynamoDBService: DynamoDBService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async onModuleInit() {
     await this.createTables();
@@ -21,7 +26,7 @@ export class DynamoDBInitService implements OnModuleInit {
 
     const tables = [
       {
-        TableName: 'videos',
+        TableName: this.configService.get<string>('DYNAMODB_TABLE'),
         AttributeDefinitions: [
           { AttributeName: 'id', AttributeType: ScalarAttributeType.S },
           { AttributeName: 'userId', AttributeType: ScalarAttributeType.S },
@@ -31,6 +36,19 @@ export class DynamoDBInitService implements OnModuleInit {
           { AttributeName: 'userId', KeyType: KeyType.RANGE },
         ],
         ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 },
+        GlobalSecondaryIndexes: [
+          {
+            IndexName: 'userId-index',
+            KeySchema: [{ AttributeName: 'userId', KeyType: KeyType.HASH }],
+            Projection: {
+              ProjectionType: 'ALL',
+            },
+            ProvisionedThroughput: {
+              ReadCapacityUnits: 5,
+              WriteCapacityUnits: 5,
+            },
+          },
+        ] as GlobalSecondaryIndex[],
       },
     ];
 
