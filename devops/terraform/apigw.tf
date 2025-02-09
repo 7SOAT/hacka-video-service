@@ -85,7 +85,7 @@ resource "aws_api_gateway_integration" "get_videos" {
   }
 
   connection_type = "VPC_LINK"
-  connection_id   = aws_api_gateway_vpc_link.upload_service.id
+  connection_id   = aws_api_gateway_vpc_link.video_service.id
 }
 
 resource "aws_api_gateway_integration" "post_videos" {
