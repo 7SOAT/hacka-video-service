@@ -16,6 +16,7 @@ export class VideoController {
   })
   @ApiResponse({ status: 404, description: 'Not found.' })
   async findAll() {
+    console.log(`Executing route: "GET /videos"`);
     return await this.videoService.findAll();
   }
 
@@ -38,6 +39,7 @@ export class VideoController {
   })
   @ApiResponse({ status: 404, description: 'Not found.' })
   async findById(@Param('id') id: string, @Param('userId') userID: string) {
+    console.log(`Executing route: "GET /videos/:id/user/:userId"`);
     return await this.videoService.findById({ id, userId: userID });
   }
 
@@ -48,6 +50,7 @@ export class VideoController {
   })
   @ApiResponse({ status: 404, description: 'Not found.' })
   async download(@Param('id') id: string, @Param('userId') userID: string) {
+    console.log(`Executing route: "GET download/:id/:userId"`);
     return await this.videoService.download({ id, userId: userID });
   }
 
@@ -72,6 +75,7 @@ export class VideoController {
   })
   @ApiResponse({ status: 404, description: 'Not found.' })
   async findByUserId(@Param('userId') userId: string) {
+    console.log(`Executing route: "GET user/:userId"`);
     return await this.videoService.findByUserId(userId);
   }
 }
