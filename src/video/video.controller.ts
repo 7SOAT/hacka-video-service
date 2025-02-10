@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { VideoService } from './video.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateVideoDto } from 'src/dto/video/create-video.dto';
@@ -9,13 +9,16 @@ import { UpdateVideosDto } from 'src/dto/video/update-videos.dto';
 export class VideoController {
   constructor(private readonly videoService: VideoService) {}
 
-  @Get('download/:id/:userId')
+  @Get('download/by-id/:videoId')
   @ApiResponse({
     status: 200,
     description: 'Get a video by ID',
   })
   @ApiResponse({ status: 404, description: 'Not found.' })
-  async download(@Param('id') id: string, @Param('userId') userID: string) {
+  async download(
+    @Param('videoId') id: string,
+    @Query('userId') userID: string,
+  ) {
     console.log(`Executing route: "GET download/:id/:userId"`);
     return await this.videoService.download({ id, userId: userID });
   }
@@ -31,13 +34,16 @@ export class VideoController {
     return await this.videoService.findByUserId(userId);
   }
 
-  @Get(':id/user/:userId')
+  @Get('by-id/:videoId')
   @ApiResponse({
     status: 200,
     description: 'Get a video by ID',
   })
   @ApiResponse({ status: 404, description: 'Not found.' })
-  async findById(@Param('id') id: string, @Param('userId') userID: string) {
+  async findById(
+    @Param('videoId') id: string,
+    @Query('userId') userID: string,
+  ) {
     console.log(`Executing route: "GET /videos/:id/user/:userId"`);
     return await this.videoService.findById({ id, userId: userID });
   }
