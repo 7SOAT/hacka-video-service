@@ -16,10 +16,27 @@ resource "aws_api_gateway_resource" "download" {
   parent_id   = aws_api_gateway_resource.videos.id
   path_part   = "download"
 }
+resource "aws_api_gateway_resource" "download_video" {
+  rest_api_id = local.apigw_id
+  parent_id   = aws_api_gateway_resource.download.id
+  path_part   = "{videoId}"
+}
+resource "aws_api_gateway_resource" "download_video_user" {
+  rest_api_id = local.apigw_id
+  parent_id   = aws_api_gateway_resource.download_video.id
+  path_part   = "{userId}"
+}
+
 resource "aws_api_gateway_resource" "user" {
   rest_api_id = local.apigw_id
   parent_id   = aws_api_gateway_resource.videos.id
   path_part   = "user"
+}
+
+resource "aws_api_gateway_resource" "user_id" {
+  rest_api_id = local.apigw_id
+  parent_id   = aws_api_gateway_resource.user.id
+  path_part   = "{userId}"
 }
 #endregion
 #region [Methods]
@@ -59,9 +76,9 @@ resource "aws_api_gateway_method" "put_videos" {
   }
 }
 
-resource "aws_api_gateway_method" "get_videos_download" {
+resource "aws_api_gateway_method" "get_download_video_user" {
   rest_api_id   = local.apigw_id
-  resource_id   = aws_api_gateway_resource.download.id
+  resource_id   = aws_api_gateway_resource.download_video_user.id
   http_method   = "GET"
   authorization = "NONE"
 
@@ -71,9 +88,9 @@ resource "aws_api_gateway_method" "get_videos_download" {
   }
 }
 
-resource "aws_api_gateway_method" "get_videos_user" {
+resource "aws_api_gateway_method" "get_videos_user_id" {
   rest_api_id   = local.apigw_id
-  resource_id   = aws_api_gateway_resource.user.id
+  resource_id   = aws_api_gateway_resource.user_id.id
   http_method   = "GET"
   authorization = "NONE"
 
@@ -153,9 +170,9 @@ resource "aws_api_gateway_integration" "put_videos" {
   depends_on = [ aws_api_gateway_method.put_videos ]
 }
 
-resource "aws_api_gateway_integration" "get_videos_download" {
+resource "aws_api_gateway_integration" "get_download_video_user" {
   rest_api_id = local.apigw_id
-  resource_id = aws_api_gateway_resource.download.id
+  resource_id = aws_api_gateway_resource.download_video_user.id
   http_method = "GET"
 
   integration_http_method = "ANY"
@@ -173,12 +190,12 @@ resource "aws_api_gateway_integration" "get_videos_download" {
   connection_type = "VPC_LINK"
   connection_id   = aws_api_gateway_vpc_link.video_service.id
 
-  depends_on = [ aws_api_gateway_method.get_videos_download ]
+  depends_on = [ aws_api_gateway_method.get_download_video_user ]
 }
 
-resource "aws_api_gateway_integration" "get_videos_user" {
+resource "aws_api_gateway_integration" "get_videos_user_id" {
   rest_api_id = local.apigw_id
-  resource_id = aws_api_gateway_resource.user.id
+  resource_id = aws_api_gateway_resource.user_id.id
   http_method = "GET"
 
   integration_http_method = "ANY"
@@ -196,6 +213,6 @@ resource "aws_api_gateway_integration" "get_videos_user" {
   connection_type = "VPC_LINK"
   connection_id   = aws_api_gateway_vpc_link.video_service.id
 
-  depends_on = [ aws_api_gateway_method.get_videos_user ]
+  depends_on = [ aws_api_gateway_method.get_videos_user_id ]
 }
 #endregion
