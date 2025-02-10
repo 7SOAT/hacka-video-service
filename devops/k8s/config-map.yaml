@@ -7,3 +7,4 @@ data:
   NODE_ENV: "production"
   PORT: "3001"
   FRAME_EXTRACTOR_S3_BUCKET: "afluga-hacka-frames-storage"
+  DYNAMODB_TABLE: "videos-table"
