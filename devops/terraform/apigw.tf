@@ -141,7 +141,7 @@ resource "aws_api_gateway_integration" "get_videos_download_by_id_param" {
 
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
-  uri                     = "http://${local.loadbalancer_dns_name}/videos"
+  uri                     = "http://${local.loadbalancer_dns_name}/videos/download/by-id/{videoId}"
   passthrough_behavior    = "WHEN_NO_MATCH"
   content_handling        = "CONVERT_TO_TEXT"
 
@@ -164,7 +164,7 @@ resource "aws_api_gateway_integration" "get_videos_user_id_param" {
 
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
-  uri                     = "http://${local.loadbalancer_dns_name}/videos"
+  uri                     = "http://${local.loadbalancer_dns_name}/videos/user/{userId}"
   passthrough_behavior    = "WHEN_NO_MATCH"
   content_handling        = "CONVERT_TO_TEXT"
 
@@ -187,7 +187,7 @@ resource "aws_api_gateway_integration" "get_videos_by_id_param" {
 
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
-  uri                     = "http://${local.loadbalancer_dns_name}/videos"
+  uri                     = "http://${local.loadbalancer_dns_name}/videos/by-id/{videoId}"
   passthrough_behavior    = "WHEN_NO_MATCH"
   content_handling        = "CONVERT_TO_TEXT"
 
@@ -210,7 +210,7 @@ resource "aws_api_gateway_integration" "get_videos_all" {
 
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
-  uri                     = "http://${local.loadbalancer_dns_name}/videos"
+  uri                     = "http://${local.loadbalancer_dns_name}/videos/all"
   passthrough_behavior    = "WHEN_NO_MATCH"
   content_handling        = "CONVERT_TO_TEXT"
 

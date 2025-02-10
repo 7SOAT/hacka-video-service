@@ -11,7 +11,9 @@ export class DynamoDBService {
   constructor(private readonly configService: ConfigService) {
     const dynamoDBClient = new DynamoDBClient({
       region: this.configService.get<string>('AWS_REGION') || 'us-east-1',
-      endpoint: this.configService.get<string>('AWS_ENDPOINT_URL'),
+      endpoint:
+        this.configService.get<string>('AWS_ENDPOINT_URL') ||
+        `https://dynamodb.${this.configService.get<string>('AWS_REGION')}.amazonaws.com`,
       credentials: {
         accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID'),
         secretAccessKey: this.configService.get<string>(

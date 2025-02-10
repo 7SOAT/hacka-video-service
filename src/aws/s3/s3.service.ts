@@ -25,7 +25,8 @@ export class S3Service {
         ),
         sessionToken: this.configService.get<string>('AWS_SESSION_TOKEN'),
       },
-      endpoint: this.configService.get<string>('AWS_ENDPOINT_URL'),
+      endpoint: this.configService.get<string>('AWS_ENDPOINT_URL') ||
+        `https://s3.${this.configService.get<string>('AWS_REGION')}.amazonaws.com`,
       forcePathStyle: true,
     });
 
