@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 export class SqsService {
   private readonly logger = new Logger(SqsService.name);
   private sqs: SQSClient;
-  private readonly queueUrl = process.env.SQS_QUEUE_URL || '';
+  private queueUrl: string;
 
   constructor(private readonly configService: ConfigService) {
     this.sqs = new SQSClient({
@@ -18,6 +18,9 @@ export class SqsService {
         sessionToken: this.configService.get<string>('AWS_SESSION_TOKEN'),
       },
     });
+
+    this.queueUrl = this.configService.get<string>('SQS_QUEUE_URL') || '';
+    this.logger.log(`SQS Service initialized`);
   }
 
   async sendMessage(messageBody: Record<string, any>): Promise<void> {
