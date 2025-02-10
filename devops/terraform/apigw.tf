@@ -16,6 +16,11 @@ resource "aws_api_gateway_resource" "download" {
   parent_id   = aws_api_gateway_resource.videos.id
   path_part   = "download"
 }
+resource "aws_api_gateway_resource" "user" {
+  rest_api_id = local.apigw_id
+  parent_id   = aws_api_gateway_resource.videos.id
+  path_part   = "user"
+}
 #endregion
 #region [Methods]
 resource "aws_api_gateway_method" "get_videos" {
@@ -26,7 +31,7 @@ resource "aws_api_gateway_method" "get_videos" {
 
   request_parameters = {
     "method.request.path.proxy"           = true
-    "method.request.header.Authorization" = true
+    # "method.request.header.Authorization" = true
   }
 }
 
@@ -38,7 +43,7 @@ resource "aws_api_gateway_method" "post_videos" {
 
   request_parameters = {
     "method.request.path.proxy"           = true
-    "method.request.header.Authorization" = true
+    # "method.request.header.Authorization" = true
   }
 }
 
@@ -50,7 +55,7 @@ resource "aws_api_gateway_method" "put_videos" {
 
   request_parameters = {
     "method.request.path.proxy"           = true
-    "method.request.header.Authorization" = true
+    # "method.request.header.Authorization" = true
   }
 }
 
@@ -62,7 +67,19 @@ resource "aws_api_gateway_method" "get_videos_download" {
 
   request_parameters = {
     "method.request.path.proxy"           = true
-    "method.request.header.Authorization" = true
+    # "method.request.header.Authorization" = true
+  }
+}
+
+resource "aws_api_gateway_method" "get_videos_user" {
+  rest_api_id   = local.apigw_id
+  resource_id   = aws_api_gateway_resource.user.id
+  http_method   = "GET"
+  authorization = "NONE"
+
+  request_parameters = {
+    "method.request.path.proxy"           = true
+    # "method.request.header.Authorization" = true
   }
 }
 #endregion
@@ -81,11 +98,13 @@ resource "aws_api_gateway_integration" "get_videos" {
   request_parameters = {
     "integration.request.path.proxy"           = "method.request.path.proxy"
     "integration.request.header.Accept"        = "'application/json'"
-    "integration.request.header.Authorization" = "method.request.header.Authorization"
+    # "integration.request.header.Authorization" = "method.request.header.Authorization"
   }
 
   connection_type = "VPC_LINK"
   connection_id   = aws_api_gateway_vpc_link.video_service.id
+
+  depends_on = [ aws_api_gateway_method.get_videos ]
 }
 
 resource "aws_api_gateway_integration" "post_videos" {
@@ -102,11 +121,13 @@ resource "aws_api_gateway_integration" "post_videos" {
   request_parameters = {
     "integration.request.path.proxy"           = "method.request.path.proxy"
     "integration.request.header.Accept"        = "'application/json'"
-    "integration.request.header.Authorization" = "method.request.header.Authorization"
+    # "integration.request.header.Authorization" = "method.request.header.Authorization"
   }
 
   connection_type = "VPC_LINK"
   connection_id   = aws_api_gateway_vpc_link.video_service.id
+
+  depends_on = [ aws_api_gateway_method.post_videos ]
 }
 
 resource "aws_api_gateway_integration" "put_videos" {
@@ -123,11 +144,13 @@ resource "aws_api_gateway_integration" "put_videos" {
   request_parameters = {
     "integration.request.path.proxy"           = "method.request.path.proxy"
     "integration.request.header.Accept"        = "'application/json'"
-    "integration.request.header.Authorization" = "method.request.header.Authorization"
+    # "integration.request.header.Authorization" = "method.request.header.Authorization"
   }
 
   connection_type = "VPC_LINK"
   connection_id   = aws_api_gateway_vpc_link.video_service.id
+
+  depends_on = [ aws_api_gateway_method.put_videos ]
 }
 
 resource "aws_api_gateway_integration" "get_videos_download" {
@@ -144,10 +167,35 @@ resource "aws_api_gateway_integration" "get_videos_download" {
   request_parameters = {
     "integration.request.path.proxy"           = "method.request.path.proxy"
     "integration.request.header.Accept"        = "'application/json'"
-    "integration.request.header.Authorization" = "method.request.header.Authorization"
+    # "integration.request.header.Authorization" = "method.request.header.Authorization"
   }
 
   connection_type = "VPC_LINK"
   connection_id   = aws_api_gateway_vpc_link.video_service.id
+
+  depends_on = [ aws_api_gateway_method.get_videos_download ]
+}
+
+resource "aws_api_gateway_integration" "get_videos_user" {
+  rest_api_id = local.apigw_id
+  resource_id = aws_api_gateway_resource.user.id
+  http_method = "GET"
+
+  integration_http_method = "ANY"
+  type                    = "HTTP_PROXY"
+  uri                     = "http://${local.loadbalancer_dns_name}/videos"
+  passthrough_behavior    = "WHEN_NO_MATCH"
+  content_handling        = "CONVERT_TO_TEXT"
+
+  request_parameters = {
+    "integration.request.path.proxy"           = "method.request.path.proxy"
+    "integration.request.header.Accept"        = "'application/json'"
+    # "integration.request.header.Authorization" = "method.request.header.Authorization"
+  }
+
+  connection_type = "VPC_LINK"
+  connection_id   = aws_api_gateway_vpc_link.video_service.id
+
+  depends_on = [ aws_api_gateway_method.get_videos_user ]
 }
 #endregion
