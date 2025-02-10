@@ -6,5 +6,5 @@ metadata:
 data:
   NODE_ENV: "production"
   PORT: "3001"
-  FRAME_EXTRACTOR_S3_BUCKET: "afluga-hacka-frames-storage"
+  AWS_S3_BUCKET_NAME: "afluga-hacka-frames-storage"
   DYNAMODB_TABLE: "videos-table"
