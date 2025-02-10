@@ -12,6 +12,7 @@ import { DynamoDBService } from 'src/database/dynamodb.service';
 import { CreateVideoDto } from 'src/dto/video/create-video.dto';
 import { FindVideoDto } from 'src/dto/video/find-video.dto';
 import { UpdateVideosDto } from 'src/dto/video/update-videos.dto';
+import { VideoStatus } from 'src/enum/video.enum';
 
 @Injectable()
 export class VideoService {
@@ -82,6 +83,7 @@ export class VideoService {
           s3Key: { S: video.s3Key },
           createdAt: { S: new Date().toISOString() },
           updatedAt: { S: new Date().toISOString() },
+          status: { S: VideoStatus.PROCESSING },
         },
       });
 
