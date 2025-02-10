@@ -53,6 +53,12 @@ resource "aws_api_gateway_resource" "videos_by_id_param" {
   parent_id   = aws_api_gateway_resource.videos_by_id.id
   path_part   = "{videoId}"
 }
+
+resource "aws_api_gateway_resource" "videos_all" {
+  rest_api_id = local.apigw_id
+  parent_id   = aws_api_gateway_resource.videos.id
+  path_part   = "all"
+}
 #endregion
 #region [Methods]
 resource "aws_api_gateway_method" "get_videos_download_by_id_param" {
@@ -91,9 +97,9 @@ resource "aws_api_gateway_method" "get_videos_by_id_param" {
   }
 }
 
-resource "aws_api_gateway_method" "get_videos" {
+resource "aws_api_gateway_method" "get_videos_all" {
   rest_api_id   = local.apigw_id
-  resource_id   = aws_api_gateway_resource.videos.id
+  resource_id   = aws_api_gateway_resource.videos_all.id
   http_method   = "GET"
   authorization = "NONE"
 
@@ -197,9 +203,9 @@ resource "aws_api_gateway_integration" "get_videos_by_id_param" {
   depends_on = [ aws_api_gateway_method.get_videos_by_id_param ]
 }
 
-resource "aws_api_gateway_integration" "get_videos" {
+resource "aws_api_gateway_integration" "get_videos_all" {
   rest_api_id = local.apigw_id
-  resource_id = aws_api_gateway_resource.videos.id
+  resource_id = aws_api_gateway_resource.videos_all.id
   http_method = "GET"
 
   integration_http_method = "ANY"
@@ -217,7 +223,7 @@ resource "aws_api_gateway_integration" "get_videos" {
   connection_type = "VPC_LINK"
   connection_id   = aws_api_gateway_vpc_link.video_service.id
 
-  depends_on = [ aws_api_gateway_method.get_videos ]
+  depends_on = [ aws_api_gateway_method.get_videos_all ]
 }
 
 resource "aws_api_gateway_integration" "post_videos" {

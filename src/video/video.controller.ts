@@ -48,7 +48,7 @@ export class VideoController {
     return await this.videoService.findById({ id, userId: userID });
   }
 
-  @Get()
+  @Get('all')
   @ApiResponse({
     status: 200,
     description: 'List of videos',
