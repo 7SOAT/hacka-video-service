@@ -9,6 +9,39 @@ import { UpdateVideosDto } from 'src/dto/video/update-videos.dto';
 export class VideoController {
   constructor(private readonly videoService: VideoService) {}
 
+  @Get('download/:id/:userId')
+  @ApiResponse({
+    status: 200,
+    description: 'Get a video by ID',
+  })
+  @ApiResponse({ status: 404, description: 'Not found.' })
+  async download(@Param('id') id: string, @Param('userId') userID: string) {
+    console.log(`Executing route: "GET download/:id/:userId"`);
+    return await this.videoService.download({ id, userId: userID });
+  }
+
+  @Get('user/:userId')
+  @ApiResponse({
+    status: 200,
+    description: 'List of videos',
+  })
+  @ApiResponse({ status: 404, description: 'Not found.' })
+  async findByUserId(@Param('userId') userId: string) {
+    console.log(`Executing route: "GET user/:userId"`);
+    return await this.videoService.findByUserId(userId);
+  }
+
+  @Get(':id/user/:userId')
+  @ApiResponse({
+    status: 200,
+    description: 'Get a video by ID',
+  })
+  @ApiResponse({ status: 404, description: 'Not found.' })
+  async findById(@Param('id') id: string, @Param('userId') userID: string) {
+    console.log(`Executing route: "GET /videos/:id/user/:userId"`);
+    return await this.videoService.findById({ id, userId: userID });
+  }
+
   @Get()
   @ApiResponse({
     status: 200,
@@ -32,28 +65,6 @@ export class VideoController {
     return await this.videoService.create(video);
   }
 
-  @Get(':id/user/:userId')
-  @ApiResponse({
-    status: 200,
-    description: 'Get a video by ID',
-  })
-  @ApiResponse({ status: 404, description: 'Not found.' })
-  async findById(@Param('id') id: string, @Param('userId') userID: string) {
-    console.log(`Executing route: "GET /videos/:id/user/:userId"`);
-    return await this.videoService.findById({ id, userId: userID });
-  }
-
-  @Get('download/:id/:userId')
-  @ApiResponse({
-    status: 200,
-    description: 'Get a video by ID',
-  })
-  @ApiResponse({ status: 404, description: 'Not found.' })
-  async download(@Param('id') id: string, @Param('userId') userID: string) {
-    console.log(`Executing route: "GET download/:id/:userId"`);
-    return await this.videoService.download({ id, userId: userID });
-  }
-
   @Put()
   @ApiResponse({
     status: 200,
@@ -66,16 +77,5 @@ export class VideoController {
     @Body() video: UpdateVideosDto,
   ) {
     return await this.videoService.update(video);
-  }
-
-  @Get('user/:userId')
-  @ApiResponse({
-    status: 200,
-    description: 'List of videos',
-  })
-  @ApiResponse({ status: 404, description: 'Not found.' })
-  async findByUserId(@Param('userId') userId: string) {
-    console.log(`Executing route: "GET user/:userId"`);
-    return await this.videoService.findByUserId(userId);
   }
 }
