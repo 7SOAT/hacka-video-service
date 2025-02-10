@@ -68,7 +68,7 @@ resource "aws_api_gateway_method" "get_videos_download_by_id_param" {
   authorization = "NONE"
 
   request_parameters = {
-    "method.request.path.proxy"           = true
+    "method.request.path.videoId" = true
     # "method.request.header.Authorization" = true
   }
 }
@@ -80,7 +80,7 @@ resource "aws_api_gateway_method" "get_videos_user_id_param" {
   authorization = "NONE"
 
   request_parameters = {
-    "method.request.path.proxy"           = true
+    "method.request.path.userId" = true
     # "method.request.header.Authorization" = true
   }
 }
@@ -92,7 +92,7 @@ resource "aws_api_gateway_method" "get_videos_by_id_param" {
   authorization = "NONE"
 
   request_parameters = {
-    "method.request.path.proxy"           = true
+    "method.request.path.videoId" = true
     # "method.request.header.Authorization" = true
   }
 }
@@ -146,7 +146,7 @@ resource "aws_api_gateway_integration" "get_videos_download_by_id_param" {
   content_handling        = "CONVERT_TO_TEXT"
 
   request_parameters = {
-    "integration.request.path.proxy"           = "method.request.path.proxy"
+    "integration.request.path.videoId"         = "method.request.path.videoId"
     "integration.request.header.Accept"        = "'application/json'"
     # "integration.request.header.Authorization" = "method.request.header.Authorization"
   }
@@ -169,7 +169,7 @@ resource "aws_api_gateway_integration" "get_videos_user_id_param" {
   content_handling        = "CONVERT_TO_TEXT"
 
   request_parameters = {
-    "integration.request.path.proxy"           = "method.request.path.proxy"
+    "integration.request.path.userId"          = "method.request.path.userId"
     "integration.request.header.Accept"        = "'application/json'"
     # "integration.request.header.Authorization" = "method.request.header.Authorization"
   }
@@ -192,7 +192,7 @@ resource "aws_api_gateway_integration" "get_videos_by_id_param" {
   content_handling        = "CONVERT_TO_TEXT"
 
   request_parameters = {
-    "integration.request.path.proxy"           = "method.request.path.proxy"
+    "integration.request.path.videoId"         = "method.request.path.videoId"
     "integration.request.header.Accept"        = "'application/json'"
     # "integration.request.header.Authorization" = "method.request.header.Authorization"
   }
@@ -215,7 +215,6 @@ resource "aws_api_gateway_integration" "get_videos_all" {
   content_handling        = "CONVERT_TO_TEXT"
 
   request_parameters = {
-    "integration.request.path.proxy"           = "method.request.path.proxy"
     "integration.request.header.Accept"        = "'application/json'"
     # "integration.request.header.Authorization" = "method.request.header.Authorization"
   }
@@ -238,7 +237,6 @@ resource "aws_api_gateway_integration" "post_videos" {
   content_handling        = "CONVERT_TO_TEXT"
 
   request_parameters = {
-    "integration.request.path.proxy"           = "method.request.path.proxy"
     "integration.request.header.Accept"        = "'application/json'"
     # "integration.request.header.Authorization" = "method.request.header.Authorization"
   }
