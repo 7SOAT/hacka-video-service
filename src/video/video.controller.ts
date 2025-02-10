@@ -51,7 +51,7 @@ export class VideoController {
     return await this.videoService.download({ id, userId: userID });
   }
 
-  @Put(':id/user/:userId')
+  @Put()
   @ApiResponse({
     status: 200,
     description: 'Update a video by ID',
@@ -60,11 +60,9 @@ export class VideoController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async update(
-    @Param('id') id: string,
-    @Param('userId') userId: string,
     @Body() video: UpdateVideosDto,
   ) {
-    return await this.videoService.update(id, userId, video);
+    return await this.videoService.update(video);
   }
 
   @Get('user/:userId')

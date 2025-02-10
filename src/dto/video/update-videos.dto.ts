@@ -3,6 +3,20 @@ import { IsString } from 'class-validator';
 
 export class UpdateVideosDto {
   @ApiProperty({
+    description: 'Video Id',
+    example: 'uuid',
+  })
+  @IsString()
+  id: string;
+
+  @ApiProperty({
+    description: 'User Id',
+    example: 'uuid',
+  })
+  @IsString()
+  userId: string;
+
+  @ApiProperty({
     description: 'S3 key',
     example: 'userId/id/filename.mp4',
   })

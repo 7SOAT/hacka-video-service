@@ -141,13 +141,13 @@ export class VideoService {
     }
   }
 
-  async update(id: string, userId: string, video: UpdateVideosDto) {
+  async update(video: UpdateVideosDto) {
     try {
       const command = new PutItemCommand({
         TableName: this.tableName,
         Item: {
-          id: { S: id },
-          userId: { S: userId },
+          id: { S: video.id },
+          userId: { S: video.userId },
           s3Key: { S: video.s3Key },
           status: { S: video.status },
           updatedAt: { S: new Date().toISOString() },
@@ -156,15 +156,15 @@ export class VideoService {
       });
       await this.dynamoDBService.getClient().send(command);
 
-      this.logger.log(`Updated video with ID ${id}`);
-      const videoResponse = await this.findById({ id, userId });
+      this.logger.log(`Updated video with ID ${video.id}`);
+      const videoResponse = await this.findById({ id: video.id, userId: video.userId });
 
       const response = this.mapValuesResponse(videoResponse);
 
       return response;
     } catch (error) {
       this.logger.error(
-        `Failed to update video with ID ${id}: ${error.message || error}`,
+        `Failed to update video with ID ${video.id}: ${error.message || error}`,
       );
     }
   }
