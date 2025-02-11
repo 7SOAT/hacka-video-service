@@ -103,8 +103,7 @@ export class VideoService {
         userId: video.userId,
       });
 
-      const response = this.mapValuesResponse(videoResponse);
-      return response;
+      return videoResponse;
     } catch (error) {
       this.logger.error(
         `Failed to create video with ID ${video.id}: ${error.message || error}`,
@@ -151,9 +150,7 @@ export class VideoService {
         userId: video.userId,
       });
 
-      const response = this.mapValuesResponse(videoResponse);
-
-      return response;
+      return videoResponse;
     } catch (error) {
       this.logger.error(
         `Failed to update video with ID ${video.id}: ${error.message || error}`,
@@ -199,7 +196,7 @@ export class VideoService {
     }
   }
 
-  private mapValuesResponse(response: any) {
+  mapValuesResponse(response: any) {
     return {
       id: response?.id.S,
       userId: response?.userId.S,
