@@ -35,8 +35,8 @@ src
   <li>
     <h3>Clonando o repositório</h3>
 
-    git clone https://github.com/7SOAT/hacka-upload-service.git
-    cd hacka-upload-service
+    git clone https://github.com/7SOAT/hacka-video-service.git
+    cd hacka-video-service
   </li>
   <li>
     <h3>Instalar bibliotecas</h3>
