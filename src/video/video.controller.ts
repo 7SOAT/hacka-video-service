@@ -79,9 +79,7 @@ export class VideoController {
   @ApiResponse({ status: 404, description: 'Not found.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async update(
-    @Body() video: UpdateVideosDto,
-  ) {
+  async update(@Body() video: UpdateVideosDto) {
     return await this.videoService.update(video);
   }
 }
