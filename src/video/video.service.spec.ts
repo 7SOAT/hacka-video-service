@@ -3,12 +3,14 @@ import { DynamoDBService } from 'src/database/dynamodb.service';
 import { VideoService } from './video.service';
 import { S3Service } from 'src/aws/s3/s3.service';
 import { ConfigService } from '@nestjs/config';
+import { SqsService } from 'src/aws/sqs/sqs.service';
 
 describe('VideoService', () => {
   let service: VideoService;
   let dynamoDBService: DynamoDBService;
   let s3Service: S3Service;
   let configService: ConfigService;
+  let sqsService: SqsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -36,6 +38,12 @@ describe('VideoService', () => {
             get: jest.fn(),
           },
         },
+        {
+          provide: SqsService,
+          useValue: {
+            sendMessage: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -43,6 +51,7 @@ describe('VideoService', () => {
     dynamoDBService = module.get<DynamoDBService>(DynamoDBService);
     s3Service = module.get<S3Service>(S3Service);
     configService = module.get<ConfigService>(ConfigService);
+    sqsService = module.get<SqsService>(SqsService);
   });
 
   it('should be defined', () => {
@@ -50,6 +59,7 @@ describe('VideoService', () => {
     expect(dynamoDBService).toBeDefined();
     expect(s3Service).toBeDefined();
     expect(configService).toBeDefined();
+    expect(sqsService).toBeDefined();
   });
 
   it('should fetch all videos', async () => {
@@ -106,6 +116,15 @@ describe('VideoService', () => {
       createdAt: new Date().toISOString(),
     };
     const result = await service.create(video);
+
+    const sqsSpy = jest.spyOn(sqsService, 'sendMessage');
+
+    expect(sqsSpy).toHaveBeenCalledWith({
+      videoId: video.id,
+      userId: video.userId,
+      s3Key: video.s3Key,
+    });
+
     expect(result).toEqual(newVideo);
   });
 
@@ -152,7 +171,13 @@ describe('VideoService', () => {
       }),
     } as any);
 
-    const result = await service.update(oldVideo.id, oldVideo.userId, oldVideo);
+    const result = await service.update({
+      id: oldVideo.id,
+      userId: oldVideo.userId,
+      s3Key: oldVideo.s3Key,
+      status: oldVideo.status,
+      s3ZipKey: oldVideo.s3ZipKey,
+    });
 
     expect(result).toEqual({
       id: oldVideo.id,

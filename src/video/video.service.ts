@@ -87,18 +87,6 @@ export class VideoService {
         },
       });
 
-      console.log(`command parameters: `, {
-        TableName: this.tableName,
-        Item: {
-          id: { S: video.id },
-          userId: { S: video.userId },
-          s3Key: { S: video.s3Key },
-          createdAt: { S: new Date().toISOString() },
-          updatedAt: { S: new Date().toISOString() },
-          status: { S: VideoStatus.PROCESSING },
-        },
-      });
-
       await this.dynamoDBService.getClient().send(command);
       this.logger.log(`Created video with ID ${video.id}`);
 
@@ -116,7 +104,6 @@ export class VideoService {
       const response = this.mapValuesResponse(videoResponse);
       return response;
     } catch (error) {
-      console.log(error);
       this.logger.error(
         `Failed to create video with ID ${video.id}: ${error.message || error}`,
       );
