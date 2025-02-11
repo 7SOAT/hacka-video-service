@@ -64,8 +64,10 @@ export class VideoService {
         throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
       }
 
+      const videoResponse = this.mapValuesResponse(Item);
+
       this.logger.log(`Fetched video with ID ${id}`);
-      return Item;
+      return videoResponse;
     } catch (error) {
       this.logger.error(
         `Failed to fetch video with ID ${id}: ${error.message || error}`,
@@ -144,7 +146,10 @@ export class VideoService {
       await this.dynamoDBService.getClient().send(command);
 
       this.logger.log(`Updated video with ID ${video.id}`);
-      const videoResponse = await this.findById({ id: video.id, userId: video.userId });
+      const videoResponse = await this.findById({
+        id: video.id,
+        userId: video.userId,
+      });
 
       const response = this.mapValuesResponse(videoResponse);
 
