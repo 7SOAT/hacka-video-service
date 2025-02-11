@@ -73,13 +73,32 @@ describe('VideoService', () => {
   });
 
   it('should fetch video by ID', async () => {
-    const video = { id: '1', userId: '1', title: 'video' };
+    const video = {
+      id: { S: '1' },
+      userId: { S: '1' },
+      s3Key: {
+        S: 'key',
+      },
+      status: {
+        S: 'uploaded',
+      },
+      s3ZipKey: {
+        S: 'zip',
+      },
+      updatedAt: {
+        S: new Date().toISOString(),
+      },
+      createdAt: {
+        S: new Date().toISOString(),
+      },
+    };
     jest.spyOn(dynamoDBService, 'getClient').mockReturnValue({
       send: jest.fn().mockResolvedValue({ Item: video }),
     } as any);
 
     const result = await service.findById({ id: '1', userId: '1' });
-    expect(result).toEqual(video);
+    const responseMap = service.mapValuesResponse(video);
+    expect(result).toEqual(responseMap);
   });
 
   it('should create a video', async () => {
@@ -167,6 +186,9 @@ describe('VideoService', () => {
           updatedAt: {
             S: oldVideo.updatedAt,
           },
+          createdAt: {
+            S: new Date().toISOString(),
+          },
         },
       }),
     } as any);
@@ -186,6 +208,7 @@ describe('VideoService', () => {
       status: oldVideo.status,
       s3ZipKey: oldVideo.s3ZipKey,
       updatedAt: oldVideo.updatedAt,
+      createdAt: new Date().toISOString(),
     });
   });
 
