@@ -162,10 +162,10 @@ export class VideoService {
     const video = await this.findById({ id, userId });
 
     this.logger.log(
-      `Downloading video with ID ${id} and S3 key ${video.s3ZipKey.S}`,
+      `Downloading video with ID ${id} and S3 key ${video.s3ZipKey}`,
     );
 
-    const response = await this.s3Service.download(video.s3ZipKey.S);
+    const response = await this.s3Service.download(video.s3ZipKey);
 
     return response;
   }
